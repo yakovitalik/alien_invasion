@@ -1,6 +1,8 @@
 import sys
-
 import pygame
+
+from settings import Settings
+from ship import Ship
 
 
 class AlienInvasion:
@@ -10,10 +12,10 @@ class AlienInvasion:
         """Инициализирует игру и создает игровые ресурсы"""
         pygame.init()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((1200, 800))
-        self.FPS = 60
-        self.bg_color = (230, 230, 230)
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
+        self.ship = Ship(self)
 
     def run_game(self):
         """Запускает основной цикл игры"""
@@ -24,11 +26,12 @@ class AlienInvasion:
                     sys.exit()
 
             # При каждом проходе цикла перерисовывается экран
-            self.screen.fill(self.bg_color)
+            self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
 
             # Отображение последнего прорисованного экрана
             pygame.display.flip()
-            self.clock.tick(self.FPS)
+            self.clock.tick(60)
 
 
 if __name__ == '__main__':
