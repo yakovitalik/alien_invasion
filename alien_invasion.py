@@ -111,11 +111,16 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.scope += self.settings.alien_points * len(aliens)
             self.sb.prep_scope()
+            self.sb.check_high_score()
         if not self.aliens:
             # Уничтожение существующих снарядов и создание нового флота.
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            # Увеличение уровня.
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_screen(self):
         """Обновляет изображение на экране и прорисовывает новый экран"""
@@ -126,7 +131,7 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
 
         # Вывод информации о счете.
-        self.sb.show_scope()
+        self.sb.show_score()
 
         # Кнопка Play отображается в том случае, если игра неактивна.
         if not self.game_active:
@@ -184,8 +189,9 @@ class AlienInvasion:
     def _ship_hit(self):
         """Обрабатывает столкновение корабля с пришельцем."""
         if self.stats.ships_left > 0:
-            # Уменьшение ship_left.
+            # Уменьшение ship_left и обновление панели счета.
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # Очистка групп aliens и bullets.
             self.aliens.empty()
@@ -223,6 +229,8 @@ class AlienInvasion:
             self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.sb.prep_scope()
+            self.sb.prep_level()
+            self.sb.prep_ships()
             self.game_active = True
 
             # Очистка групп aliens и bullets.
